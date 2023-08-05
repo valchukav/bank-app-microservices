@@ -24,7 +24,7 @@ public class Loan {
     private long loanNumber;
 
     @Column(name = "customer_id")
-    private int customerId;
+    private long customerId;
 
     @Column(name = "start_date")
     private LocalDate startDate;

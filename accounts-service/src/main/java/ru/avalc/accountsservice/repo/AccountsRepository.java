@@ -11,5 +11,5 @@ import ru.avalc.accountsservice.model.Account;
 @Repository
 public interface AccountsRepository extends CrudRepository<Account, Long> {
 
-    Account findByCustomerId(int customerId);
+    Account findByCustomerId(long customerId);
 }

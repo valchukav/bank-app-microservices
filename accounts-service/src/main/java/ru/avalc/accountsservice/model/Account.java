@@ -20,7 +20,7 @@ import java.time.LocalDate;
 public class Account {
 
     @Column(name = "customer_id")
-    private int customerId;
+    private long customerId;
 
     @Id
     @Column(name = "account_number")
