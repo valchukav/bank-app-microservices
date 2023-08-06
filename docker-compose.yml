@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  accounts-service:
+    image: avalc/accounts-service
+    mem_limit: 700m
+    ports:
+      - "8080:8080"
+    networks:
+      - bank-app-network
+
+  loans-service:
+    image: avalc/loans-service
+    mem_limit: 700m
+    ports:
+      - "8090:8090"
+    networks:
+      - bank-app-network
+
+  cards-service:
+    image: avalc/cards-service
+    mem_limit: 700m
+    ports:
+      - "9000:9000"
+    networks:
+      - bank-app-network
+
+networks:
+  bank-app-network:
