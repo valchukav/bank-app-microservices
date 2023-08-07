@@ -8,6 +8,16 @@ services:
       - "8080:8080"
     networks:
       - bank-app-network
+    depends_on:
+      - config-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+        SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
 
   loans-service:
     image: avalc/loans-service
@@ -16,12 +26,40 @@ services:
       - "8090:8090"
     networks:
       - bank-app-network
+    depends_on:
+      - config-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
 
   cards-service:
     image: avalc/cards-service
     mem_limit: 700m
     ports:
       - "9000:9000"
+    networks:
+      - bank-app-network
+    depends_on:
+      - config-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+        SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+
+  config-server:
+    image: avalc/config-server
+    mem_limit: 700m
+    ports:
+      - "8888:8888"
     networks:
       - bank-app-network
 
