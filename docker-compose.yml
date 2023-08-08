@@ -10,6 +10,7 @@ services:
       - bank-app-network
     depends_on:
       - config-server
+      - eureka-server
     deploy:
       restart_policy:
         condition: on-failure
@@ -18,12 +19,61 @@ services:
         window: 120s
     environment:
         SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+        EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
 
   loans-service:
     image: avalc/loans-service
     mem_limit: 700m
     ports:
       - "8090:8090"
+    networks:
+      - bank-app-network
+    depends_on:
+      - config-server
+      - eureka-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+
+  cards-service:
+    image: avalc/cards-service
+    mem_limit: 700m
+    ports:
+      - "9000:9000"
+    networks:
+      - bank-app-network
+    depends_on:
+      - config-server
+      - eureka-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+        SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+        EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+
+  config-server:
+    image: avalc/config-server
+    mem_limit: 700m
+    ports:
+      - "8888:8888"
+    networks:
+      - bank-app-network
+
+  eureka-server:
+    image: avalc/eureka-server
+    mem_limit: 700m
+    ports:
+      - "8761:8761"
     networks:
       - bank-app-network
     depends_on:
@@ -36,32 +86,6 @@ services:
         window: 120s
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
-
-  cards-service:
-    image: avalc/cards-service
-    mem_limit: 700m
-    ports:
-      - "9000:9000"
-    networks:
-      - bank-app-network
-    depends_on:
-      - config-server
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
-    environment:
-        SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
-
-  config-server:
-    image: avalc/config-server
-    mem_limit: 700m
-    ports:
-      - "8888:8888"
-    networks:
-      - bank-app-network
 
 networks:
   bank-app-network:
