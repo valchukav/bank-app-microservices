@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import ru.avalc.accountsservice.model.Customer;
-import ru.avalc.accountsservice.model.Loan;
 
 import java.util.List;
 
@@ -17,5 +16,5 @@ import java.util.List;
 public interface LoansFeignClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "myLoans", consumes = "application/json")
-    List<Loan> getLoanDetails(@RequestBody Customer customer);
+    List<Object> getLoanDetails(@RequestBody Customer customer);
 }

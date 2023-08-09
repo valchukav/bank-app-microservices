@@ -53,8 +53,8 @@ public class AccountsController {
     @PostMapping("/customerDetails")
     public CustomerDetails getCustomerDetails(@RequestBody Customer customer) {
         Account account = repository.findByCustomerId(customer.getCustomerId());
-        List<Card> cardDetails = cardsFeignClient.getCardDetails(customer);
-        List<Loan> loanDetails = loansFeignClient.getLoanDetails(customer);
+        List<Object> cardDetails = cardsFeignClient.getCardDetails(customer);
+        List<Object> loanDetails = loansFeignClient.getLoanDetails(customer);
 
         return new CustomerDetails(account, cardDetails, loanDetails);
     }

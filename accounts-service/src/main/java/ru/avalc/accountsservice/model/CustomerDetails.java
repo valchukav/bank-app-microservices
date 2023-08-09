@@ -17,6 +17,6 @@ import java.util.List;
 public class CustomerDetails {
 
     private Account account;
-    private List<Card> cards;
-    private List<Loan> loans;
+    private List<Object> cards;
+    private List<Object> loans;
 }
