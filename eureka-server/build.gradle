@@ -35,3 +35,8 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.named("bootBuildImage") {
+    imageName = "avalc/${rootProject.name}:${version}"
+    pullPolicy = "IF_NOT_PRESENT"
+}
