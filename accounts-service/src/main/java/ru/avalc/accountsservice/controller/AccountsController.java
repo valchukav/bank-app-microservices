@@ -3,13 +3,18 @@ package ru.avalc.accountsservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import feign.FeignException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.avalc.accountsservice.config.AccountsServiceConfig;
-import ru.avalc.accountsservice.model.*;
+import ru.avalc.accountsservice.model.Account;
+import ru.avalc.accountsservice.model.Customer;
+import ru.avalc.accountsservice.model.CustomerDetails;
+import ru.avalc.accountsservice.model.Properties;
 import ru.avalc.accountsservice.repo.AccountsRepository;
 import ru.avalc.accountsservice.service.client.CardsFeignClient;
 import ru.avalc.accountsservice.service.client.LoansFeignClient;
@@ -51,11 +56,33 @@ public class AccountsController {
     }
 
     @PostMapping("/customerDetails")
+    @CircuitBreaker(name = "detailsForCustomerSupportApp", fallbackMethod = "customerDetailsFallback")
     public CustomerDetails getCustomerDetails(@RequestBody Customer customer) {
         Account account = repository.findByCustomerId(customer.getCustomerId());
         List<Object> cardDetails = cardsFeignClient.getCardDetails(customer);
         List<Object> loanDetails = loansFeignClient.getLoanDetails(customer);
 
         return new CustomerDetails(account, cardDetails, loanDetails);
+    }
+
+    private CustomerDetails customerDetailsFallback(Customer customer, Throwable throwable) {
+        CustomerDetails customerDetails = new CustomerDetails();
+        customerDetails.setAccount(repository.findByCustomerId(customer.getCustomerId()));
+
+        try {
+            List<Object> cardDetails = cardsFeignClient.getCardDetails(customer);
+            customerDetails.setCards(cardDetails);
+        } catch (FeignException exception) {
+            customerDetails.setCards(List.of("Cards service is not available now. Try it later."));
+        }
+
+        try {
+            List<Object> loanDetails = loansFeignClient.getLoanDetails(customer);
+            customerDetails.setLoans(loanDetails);
+        } catch (FeignException exception) {
+            customerDetails.setLoans(List.of("Loans service is not available now. Try it later."));
+        }
+
+        return customerDetails;
     }
 }

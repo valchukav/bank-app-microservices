@@ -3,6 +3,7 @@ package ru.avalc.cardsservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,7 @@ public class CardsController {
     }
 
     @PostMapping("/myCards")
-    public List<Card> getCustomerLoans(@RequestBody Customer customer) {
+    public List<Card> getCustomerCards(@RequestBody Customer customer) {
 
         return repository.findByCustomerId(customer.getCustomerId());
     }
