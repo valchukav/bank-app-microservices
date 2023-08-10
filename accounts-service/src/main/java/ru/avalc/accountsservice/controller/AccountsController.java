@@ -70,20 +70,38 @@ public class AccountsController {
         CustomerDetails customerDetails = new CustomerDetails();
         customerDetails.setAccount(repository.findByCustomerId(customer.getCustomerId()));
 
-        try {
-            List<Object> cardDetails = cardsFeignClient.getCardDetails(correlationId, customer);
-            customerDetails.setCards(cardDetails);
-        } catch (FeignException exception) {
-            customerDetails.setCards(List.of("Cards service is not available now. Try it later."));
+        String excMessage = throwable.getMessage().toLowerCase();
+
+        if (!excMessage.contains("cards")) {
+            try {
+                List<Object> cardDetails = cardsFeignClient.getCardDetails(correlationId, customer);
+                customerDetails.setCards(cardDetails);
+            } catch (FeignException exception) {
+                setEmptyCards(customerDetails);
+            }
+        } else {
+            setEmptyCards(customerDetails);
         }
 
-        try {
-            List<Object> loanDetails = loansFeignClient.getLoanDetails(correlationId, customer);
-            customerDetails.setLoans(loanDetails);
-        } catch (FeignException exception) {
-            customerDetails.setLoans(List.of("Loans service is not available now. Try it later."));
+        if (!excMessage.contains("loans")) {
+            try {
+                List<Object> loanDetails = loansFeignClient.getLoanDetails(correlationId, customer);
+                customerDetails.setLoans(loanDetails);
+            } catch (FeignException exception) {
+                setEmptyLoans(customerDetails);
+            }
+        } else {
+            setEmptyLoans(customerDetails);
         }
 
         return customerDetails;
+    }
+
+    private void setEmptyCards(CustomerDetails customerDetails) {
+        customerDetails.setCards(List.of("Cards service is not available now. Try it later."));
+    }
+
+    private void setEmptyLoans(CustomerDetails customerDetails) {
+        customerDetails.setLoans(List.of("Loans service is not available now. Try it later."));
     }
 }
