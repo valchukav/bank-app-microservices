@@ -7,10 +7,7 @@ import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.avalc.accountsservice.config.AccountsServiceConfig;
 import ru.avalc.accountsservice.model.Account;
 import ru.avalc.accountsservice.model.Customer;
@@ -44,13 +41,13 @@ public class AccountsController {
     }
 
     @PostMapping("/myAccount")
-    public Account getAccountDetails(@RequestBody Customer customer) {
+    public Account getAccountDetails(@RequestHeader("bank-app-correlation-id") String correlationId, @RequestBody Customer customer) {
 
         return repository.findByCustomerId(customer.getCustomerId());
     }
 
     @GetMapping("/account/properties")
-    public String getPropertyDetails() throws JsonProcessingException {
+    public String getPropertyDetails(@RequestHeader("bank-app-correlation-id") String correlationId) throws JsonProcessingException {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         Properties properties = new Properties(accountsServiceConfig.getMsg(), accountsServiceConfig.getBuildVersion(),
                 accountsServiceConfig.getMailDetails());
@@ -59,27 +56,27 @@ public class AccountsController {
 
     @PostMapping("/customerDetails")
     @CircuitBreaker(name = "detailsForCustomerSupportApp", fallbackMethod = "customerDetailsFallback")
-    public CustomerDetails getCustomerDetails(@RequestBody Customer customer) {
+    public CustomerDetails getCustomerDetails(@RequestHeader("bank-app-correlation-id") String correlationId, @RequestBody Customer customer) {
         Account account = repository.findByCustomerId(customer.getCustomerId());
-        List<Object> cardDetails = cardsFeignClient.getCardDetails(customer);
-        List<Object> loanDetails = loansFeignClient.getLoanDetails(customer);
+        List<Object> cardDetails = cardsFeignClient.getCardDetails(correlationId, customer);
+        List<Object> loanDetails = loansFeignClient.getLoanDetails(correlationId, customer);
 
         return new CustomerDetails(account, cardDetails, loanDetails);
     }
 
-    private CustomerDetails customerDetailsFallback(Customer customer, Throwable throwable) {
+    private CustomerDetails customerDetailsFallback(@RequestHeader("bank-app-correlation-id") String correlationId, Customer customer, Throwable throwable) {
         CustomerDetails customerDetails = new CustomerDetails();
         customerDetails.setAccount(repository.findByCustomerId(customer.getCustomerId()));
 
         try {
-            List<Object> cardDetails = cardsFeignClient.getCardDetails(customer);
+            List<Object> cardDetails = cardsFeignClient.getCardDetails(correlationId, customer);
             customerDetails.setCards(cardDetails);
         } catch (FeignException exception) {
             customerDetails.setCards(List.of("Cards service is not available now. Try it later."));
         }
 
         try {
-            List<Object> loanDetails = loansFeignClient.getLoanDetails(customer);
+            List<Object> loanDetails = loansFeignClient.getLoanDetails(correlationId, customer);
             customerDetails.setLoans(loanDetails);
         } catch (FeignException exception) {
             customerDetails.setLoans(List.of("Loans service is not available now. Try it later."));
