@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.avalc.accountsservice.config.AccountsServiceConfig;
@@ -54,6 +55,7 @@ public class AccountsController {
         return ow.writeValueAsString(properties);
     }
 
+    @Timed(value = "getCustomerDetails.time", description = "Time taken to return Customer details")
     @PostMapping("/customerDetails")
     @CircuitBreaker(name = "detailsForCustomerSupportApp", fallbackMethod = "customerDetailsFallback")
     public CustomerDetails getCustomerDetails(@RequestHeader("bank-app-correlation-id") String correlationId, @RequestBody Customer customer) {
