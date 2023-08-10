@@ -87,5 +87,28 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
 
+  gateway-server:
+    image: avalc/gateway-server
+    mem_limit: 700m
+    ports:
+      - "8765:8765"
+    networks:
+      - bank-app-network
+    depends_on:
+      - config-server
+      - eureka-server
+      - accounts-service
+      - loans-service
+      - cards-service
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 45s
+        max_attempts: 3
+        window: 180s
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+
 networks:
   bank-app-network:
