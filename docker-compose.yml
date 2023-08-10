@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - bank-app-network
+
   accounts-service:
     image: avalc/accounts-service
     mem_limit: 700m
@@ -98,7 +108,7 @@ services:
         condition: on-failure
         delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 180s
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
 

@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+scrape_configs:
+  - job_name: 'accounts-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'accounts-service:8080' ]
+  - job_name: 'loans-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'loans-service:8090' ]
+  - job_name: 'cards-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'cards-service:9000' ]
