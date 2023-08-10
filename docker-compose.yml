@@ -9,17 +9,21 @@ services:
     networks:
       - bank-app-network
     depends_on:
+      - rabbitmq
       - config-server
       - eureka-server
     deploy:
       restart_policy:
         condition: on-failure
-        delay: 5s
+        delay: 10s
         max_attempts: 3
         window: 120s
     environment:
         SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
         EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+        SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
+        RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+        SPRING_RABBITMQ_HOST: rabbitmq
 
   loans-service:
     image: avalc/loans-service
@@ -29,17 +33,21 @@ services:
     networks:
       - bank-app-network
     depends_on:
+      - rabbitmq
       - config-server
       - eureka-server
     deploy:
       restart_policy:
         condition: on-failure
-        delay: 5s
+        delay: 10s
         max_attempts: 3
         window: 120s
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
 
   cards-service:
     image: avalc/cards-service
@@ -49,21 +57,27 @@ services:
     networks:
       - bank-app-network
     depends_on:
+      - rabbitmq
       - config-server
       - eureka-server
     deploy:
       restart_policy:
         condition: on-failure
-        delay: 5s
+        delay: 10s
         max_attempts: 3
         window: 120s
     environment:
         SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
         EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+        SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
+        RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+        SPRING_RABBITMQ_HOST: rabbitmq
 
   config-server:
     image: avalc/config-server
     mem_limit: 700m
+    depends_on:
+      - rabbitmq
     ports:
       - "8888:8888"
     networks:
@@ -77,11 +91,12 @@ services:
     networks:
       - bank-app-network
     depends_on:
+      - rabbitmq
       - config-server
     deploy:
       restart_policy:
         condition: on-failure
-        delay: 5s
+        delay: 10s
         max_attempts: 3
         window: 120s
     environment:
@@ -95,6 +110,7 @@ services:
     networks:
       - bank-app-network
     depends_on:
+      - rabbitmq
       - config-server
       - eureka-server
       - accounts-service
@@ -109,6 +125,31 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.24
+    mem_limit: 300m
+    ports:
+      - "8411:9411"
+    networks:
+      - bank-app-network
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3.9.29-management
+    mem_limit: 300m
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - bank-app-network
 
 networks:
   bank-app-network:
