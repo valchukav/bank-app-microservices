@@ -43,6 +43,7 @@ services:
     environment:
         SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
         EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+        SPRING_PROFILES_ACTIVE: h2,zipkin,rabbitmq
         SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
         RABBIT_URI: amqp://guest:guest@rabbitmq:5672
         SPRING_RABBITMQ_HOST: rabbitmq
@@ -67,6 +68,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_PROFILES_ACTIVE: h2,zipkin,rabbitmq
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
       RABBIT_URI: amqp://guest:guest@rabbitmq:5672
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -91,6 +93,7 @@ services:
     environment:
         SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
         EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+        SPRING_PROFILES_ACTIVE: h2,zipkin,rabbitmq
         SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
         RABBIT_URI: amqp://guest:guest@rabbitmq:5672
         SPRING_RABBITMQ_HOST: rabbitmq
@@ -147,6 +150,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_PROFILES_ACTIVE: zipkin,rabbitmq
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
       RABBIT_URI: amqp://guest:guest@rabbitmq:5672
       SPRING_RABBITMQ_HOST: rabbitmq
