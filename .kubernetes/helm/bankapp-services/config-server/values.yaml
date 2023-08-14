@@ -1,0 +1,24 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentName: config-server-deployment
+deploymentLabel: config-server
+appName: config-server
+
+replicaCount: 1
+
+image:
+  repository: docker.io/avalc/config-server
+  tag: latest
+
+containerPort: 8888
+
+service:
+  type: LoadBalancer
+  port: 8888
+  targetPort: 8888
+
+config_enabled: false
+zipkin_enabled: false
+eureka_enabled: false
+appname_enabled: true
