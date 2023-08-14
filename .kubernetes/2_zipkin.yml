@@ -31,5 +31,5 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 8411
-      targetPort: 8411
+      port: 9411
+      targetPort: 9411
