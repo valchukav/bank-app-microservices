@@ -4,5 +4,6 @@ metadata:
   name: bankapp-configmap
 data:
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin-service:9411/api/v2/spans
+  SPRING_ZIPKIN_BASEURL: http://zipkin-service:9411/
   SPRING_CONFIG_IMPORT: configserver:http://config-server-service:8888/
   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server-service:8761/eureka/
