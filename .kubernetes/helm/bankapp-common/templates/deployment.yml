@@ -18,6 +18,7 @@ spec:
       containers:
         - name: {{ .Values.deploymentLabel }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.containerPort }}
               protocol: TCP

@@ -10,6 +10,7 @@ replicaCount: 1
 image:
   repository: docker.io/avalc/accounts-service
   tag: latest
+  imagePullPolicy: IfNotPresent
 
 containerPort: 8080
 

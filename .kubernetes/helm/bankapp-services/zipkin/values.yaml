@@ -10,6 +10,7 @@ replicaCount: 1
 image:
   repository: openzipkin/zipkin
   tag: 2.24
+  imagePullPolicy: IfNotPresent
 
 containerPort: 9411
 

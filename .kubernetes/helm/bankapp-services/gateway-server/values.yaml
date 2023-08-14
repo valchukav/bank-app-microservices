@@ -10,6 +10,7 @@ replicaCount: 1
 image:
   repository: docker.io/avalc/gateway-server
   tag: latest
+  imagePullPolicy: IfNotPresent
 
 containerPort: 8765
 

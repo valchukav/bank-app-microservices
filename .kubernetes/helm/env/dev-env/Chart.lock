@@ -24,4 +24,4 @@ dependencies:
   repository: file://../../bankapp-services/gateway-server
   version: 0.1.0
 digest: sha256:111cf18e34e785bde918fc7cd51ec8b1cf5a775e72a8271789d693294d8f313d
-generated: "2023-08-14T19:37:43.0929334+03:00"
+generated: "2023-08-14T20:11:16.518171+03:00"
