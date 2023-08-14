@@ -1,0 +1,6 @@
+global:
+  configMapName: bankapp-configmap
+  zipkinTracingURL: http://zipkin:9411/api/v2/spans
+  zipkinBaseURL: http://zipkin:9411/
+  configServerURL: configserver:http://config-server:8888/
+  eurekaServerURL: http://eurekaserver:8761/eureka-server/

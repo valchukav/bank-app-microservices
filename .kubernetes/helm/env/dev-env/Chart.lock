@@ -1,0 +1,27 @@
+dependencies:
+- name: bankapp-common
+  repository: file://../../bankapp-common
+  version: 0.1.0
+- name: zipkin
+  repository: file://../../bankapp-services/zipkin
+  version: 0.1.0
+- name: config-server
+  repository: file://../../bankapp-services/config-server
+  version: 0.1.0
+- name: eureka-server
+  repository: file://../../bankapp-services/eureka-server
+  version: 0.1.0
+- name: accounts-service
+  repository: file://../../bankapp-services/accounts-service
+  version: 0.1.0
+- name: cards-service
+  repository: file://../../bankapp-services/cards-service
+  version: 0.1.0
+- name: loans-service
+  repository: file://../../bankapp-services/loans-service
+  version: 0.1.0
+- name: gateway-server
+  repository: file://../../bankapp-services/gateway-server
+  version: 0.1.0
+digest: sha256:111cf18e34e785bde918fc7cd51ec8b1cf5a775e72a8271789d693294d8f313d
+generated: "2023-08-14T19:37:43.0929334+03:00"
