@@ -1,0 +1,24 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentName: cards-deployment
+deploymentLabel: cards-service
+appName: cards-service
+
+replicaCount: 1
+
+image:
+  repository: docker.io/avalc/cards-service
+  tag: latest
+
+containerPort: 9000
+
+service:
+  type: LoadBalancer
+  port: 9000
+  targetPort: 9000
+
+config_enabled: true
+zipkin_enabled: true
+eureka_enabled: true
+appname_enabled: true

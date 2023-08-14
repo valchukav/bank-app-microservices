@@ -1,0 +1,24 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentName: loans-deployment
+deploymentLabel: loans-service
+appName: loans-service
+
+replicaCount: 1
+
+image:
+  repository: docker.io/avalc/loans-service
+  tag: latest
+
+containerPort: 8090
+
+service:
+  type: LoadBalancer
+  port: 8090
+  targetPort: 8090
+
+config_enabled: true
+zipkin_enabled: true
+eureka_enabled: true
+appname_enabled: true
