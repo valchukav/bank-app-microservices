@@ -15,7 +15,7 @@ image:
 containerPort: 8761
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 8761
   targetPort: 8761
 
