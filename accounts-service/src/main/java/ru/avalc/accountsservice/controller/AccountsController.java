@@ -3,7 +3,6 @@ package ru.avalc.accountsservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.micrometer.core.annotation.Timed;
@@ -59,11 +58,16 @@ public class AccountsController {
     @PostMapping("/customerDetails")
     @CircuitBreaker(name = "detailsForCustomerSupportApp", fallbackMethod = "customerDetailsFallback")
     public CustomerDetails getCustomerDetails(@RequestHeader("bank-app-correlation-id") String correlationId, @RequestBody Customer customer) {
-        Account account = repository.findByCustomerId(customer.getCustomerId());
-        List<Object> cardDetails = cardsFeignClient.getCardDetails(correlationId, customer);
-        List<Object> loanDetails = loansFeignClient.getLoanDetails(correlationId, customer);
+        CustomerDetails customerDetails = new CustomerDetails();
 
-        return new CustomerDetails(account, cardDetails, loanDetails);
+        Account account = repository.findByCustomerId(customer.getCustomerId());
+
+        customerDetails.setAccount(account);
+
+        getCardDetails(correlationId, customer, customerDetails);
+        getLoanDetails(correlationId, customer, customerDetails);
+
+        return customerDetails;
     }
 
     private CustomerDetails customerDetailsFallback(@RequestHeader("bank-app-correlation-id") String correlationId, Customer customer, Throwable throwable) {
@@ -73,28 +77,36 @@ public class AccountsController {
         String excMessage = throwable.getMessage().toLowerCase();
 
         if (!excMessage.contains("cards")) {
-            try {
-                List<Object> cardDetails = cardsFeignClient.getCardDetails(correlationId, customer);
-                customerDetails.setCards(cardDetails);
-            } catch (FeignException exception) {
-                setEmptyCards(customerDetails);
-            }
+            getCardDetails(correlationId, customer, customerDetails);
         } else {
             setEmptyCards(customerDetails);
         }
 
         if (!excMessage.contains("loans")) {
-            try {
-                List<Object> loanDetails = loansFeignClient.getLoanDetails(correlationId, customer);
-                customerDetails.setLoans(loanDetails);
-            } catch (FeignException exception) {
-                setEmptyLoans(customerDetails);
-            }
+            getLoanDetails(correlationId, customer, customerDetails);
         } else {
             setEmptyLoans(customerDetails);
         }
 
         return customerDetails;
+    }
+
+    private void getCardDetails(String correlationId, Customer customer, CustomerDetails customerDetails) {
+        try {
+            List<Object> cardDetails = cardsFeignClient.getCardDetails(correlationId, customer);
+            customerDetails.setCards(cardDetails);
+        } catch (Exception exception) {
+            setEmptyCards(customerDetails);
+        }
+    }
+
+    private void getLoanDetails(String correlationId, Customer customer, CustomerDetails customerDetails) {
+        try {
+            List<Object> loanDetails = loansFeignClient.getLoanDetails(correlationId, customer);
+            customerDetails.setLoans(loanDetails);
+        } catch (Exception exception) {
+            setEmptyLoans(customerDetails);
+        }
     }
 
     private void setEmptyCards(CustomerDetails customerDetails) {
