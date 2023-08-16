@@ -4,3 +4,4 @@ global:
   zipkinBaseURL: http://zipkin:9411/
   configServerURL: configserver:http://config-server:8888/
   eurekaServerURL: http://eureka-server:8761/eureka/
+  keycloakURL: http://keycloak:7080/realms/master/protocol/openid-connect/certs

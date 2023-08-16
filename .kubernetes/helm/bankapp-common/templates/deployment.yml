@@ -53,4 +53,11 @@ spec:
                   name: {{ .Values.global.configMapName }}
                   key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
         {{- end }}
+        {{- if .Values.keycloak_enabled }}
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.global.configMapName }}
+                  key: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI
+        {{- end }}
 {{- end -}}
