@@ -6,6 +6,7 @@ This project represents simple bank system with accounts, cards and loans models
 - Microservice architecture,
 - Interaction between services through Eureka server and OpenFeign,
 - Routing through Gateway server,
+- Storing settings with Config server in a separate public repository: https://github.com/valchukav/bank-app-config,
 - Log tracing via RabbitMQ and Zipkin,
 - Authentication and authorization using OAuth 2 and Keycloak (client credentials grant type),
 - Deployment to Docker with docker-compose.yml,
