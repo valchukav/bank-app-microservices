@@ -47,6 +47,8 @@ services:
         SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
         RABBIT_URI: amqp://guest:guest@rabbitmq:5672
         SPRING_RABBITMQ_HOST: rabbitmq
+        SPRING.SECURITY.OAUTH2.RESOURCESERVER.JWT.JWKSETURI: http://keycloak:8080/realms/master/protocol/openid-connect/certs
+        SPRING.SECURITY.OAUTH2.CLIENT.PROVIDER.KEYCLOAK.TOKENURI: http://keycloak:8080/realms/master/protocol/openid-connect/token
 
   loans-service:
     image: avalc/loans-service
@@ -72,6 +74,8 @@ services:
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
       RABBIT_URI: amqp://guest:guest@rabbitmq:5672
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING.SECURITY.OAUTH2.RESOURCESERVER.JWT.JWKSETURI: http://keycloak:8080/realms/master/protocol/openid-connect/certs
+      SPRING.SECURITY.OAUTH2.CLIENT.PROVIDER.KEYCLOAK.TOKENURI: http://keycloak:8080/realms/master/protocol/openid-connect/token
 
   cards-service:
     image: avalc/cards-service
@@ -97,6 +101,8 @@ services:
         SPRING.ZIPKIN.BASEURL: http://zipkin-server:8411/
         RABBIT_URI: amqp://guest:guest@rabbitmq:5672
         SPRING_RABBITMQ_HOST: rabbitmq
+        SPRING.SECURITY.OAUTH2.RESOURCESERVER.JWT.JWKSETURI: http://keycloak:8080/realms/master/protocol/openid-connect/certs
+        SPRING.SECURITY.OAUTH2.CLIENT.PROVIDER.KEYCLOAK.TOKENURI: http://keycloak:8080/realms/master/protocol/openid-connect/token
 
   config-server:
     image: avalc/config-server
