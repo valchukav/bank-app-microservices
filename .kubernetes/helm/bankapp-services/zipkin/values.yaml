@@ -24,3 +24,4 @@ zipkin_enabled: false
 eureka_enabled: false
 appname_enabled: false
 keycloak_enabled: false
+oauth2_client_enabled: false

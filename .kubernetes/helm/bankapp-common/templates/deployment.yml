@@ -60,4 +60,11 @@ spec:
                   name: {{ .Values.global.configMapName }}
                   key: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI
         {{- end }}
+        {{- if .Values.oauth2_client_enabled }}
+            - name: SPRING.SECURITY.OAUTH2.CLIENT.PROVIDER.KEYCLOAK.TOKEN-URI
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.global.configMapName }}
+                  key: SPRING.SECURITY.OAUTH2.CLIENT.PROVIDER.KEYCLOAK.TOKEN-URI
+        {{- end }}
 {{- end -}}
